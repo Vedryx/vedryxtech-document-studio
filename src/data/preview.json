@@ -1,0 +1,330 @@
+{
+  "msa": [
+    {
+      "text": "MASTER SERVICES AGREEMENT ( MSA)",
+      "heading": true
+    },
+    {
+      "text": " This agreement (“Agreement”) dated {effectiveDate} is executed by and between:",
+      "heading": false
+    },
+    {
+      "text": "“{providerName}” with registered address at {providerAddress} (hereinafter referred to as “Company” which expression shall, unless repugnant to the context or meaning hereof, include its successors in interest and permitted assigns) of the First Part;",
+      "heading": false
+    },
+    {
+      "text": "AND",
+      "heading": false
+    },
+    {
+      "text": "Client “{companyFullName}” having its principal/ registered  address at {companyAddress} (hereinafter referred to as “Client” which expression shall, unless repugnant to the context or meaning hereof, include its successors in interest and permitted assigns) of the Second Part.",
+      "heading": false
+    },
+    {
+      "text": " The Client and Company are hereinafter referred to individually a “Party” and collectively as “Parties.”",
+      "heading": false
+    },
+    {
+      "text": " In consideration of the covenants contained herein, and for other good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, both the Parties hereby agree as follows:",
+      "heading": false
+    },
+    {
+      "text": " 1.      Performance of Work",
+      "heading": false
+    },
+    {
+      "text": "During the term of this engagement, upon the Client’s request, the Company will perform work in accordance with the subsequently attached and separately agreed to document(s) (“SoW”). The Parties agree that attached SoW(s) describe the general tasks anticipated to be performed by Company hereunder and that Company is qualified to perform the Work in a professional, workmanlike manner.  Each SOW will incorporate by reference the terms and conditions of this Agreement. Changes to a SOW, including but not limited to changes to schedule or scope of work, shall be made only pursuant to a change order (“Change Order”) executed by the authorized signatories of both parties.  ",
+      "heading": false
+    },
+    {
+      "text": " 2.      Payments",
+      "heading": false
+    },
+    {
+      "text": "a) Company will provide all services at the fees indicated in the Statement of Work.",
+      "heading": false
+    },
+    {
+      "text": "b) The Client shall issue payment for undisputed amounts on invoices submitted by Company at the end of month in accordance with the payment schedule set forth in the SoW. receipt of an accurate invoice. ",
+      "heading": false
+    },
+    {
+      "text": "c) Any expenses like travel, licenses will be paid by the Client provided a) a written approval is taken before incurring the expenses and b) an invoice amounting to the same is submitted",
+      "heading": false
+    },
+    {
+      "text": "3.      Intellectual Property Rights and Rights in Work Product",
+      "heading": false
+    },
+    {
+      "text": "The Client will have the right to retain the worldwide, perpetual right, title and interest in and to all tangible and intangible deliverables, including but not limited to, documents, source code or drawings, developed by Company in the course of meeting its obligations as described under the terms of this Agreement (the “Tangible Deliverables”).   ",
+      "heading": false
+    },
+    {
+      "text": "The Company hereby agrees that, upon their creation, all materials, including all inventions, it shall develop, in whole or in part, solely or jointly with others, whether or not during normal working hours, resulting from the tasks assigned to the Company by the Client under this Agreement, and all intermediate and partial versions thereof, including all copies of same, in whatever medium fixed or embodied (the “Work Product”), shall be the sole property and Confidential Information of the Client.  Work Product shall include, but not be limited to, code, data, reports, schematics, research, flow charts, notes, outlines, formulae, processes, algorithms and the like created in connection therewith, whether or not protected by copyright, patent, trademark law, or any similar intellectual property law.  The Company shall fully document and promptly communicate to the Client all Work Products created by the Company.  Within the meaning of the Indian Copyright Act of ,1957, all copyrightable aspects of the Work Product shall be considered “works made for hire,” the Client shall be deemed to be the “author” of all such works and the Company hereby expressly disclaims any interest in any of them. ",
+      "heading": false
+    },
+    {
+      "text": "Assignment of Right, Title and Interest.  The Company hereby delivers and assigns to the Client, free and clear of all liens and encumbrances, all its global rights, title and interests in and to all aspects of the Work Product and its related Intellectual Property Rights, for all forms and media, whether or not now existing, including, without limitation, any right to collect for past damages for the infringement or unauthorized use of such Work Product.  The Company waives any moral right claims in the Work Product and consents to the Client’s assumption of such moral rights.  All of the Company’s obligations outlined in this “Work for Hire” section shall be continuous, and the Company shall deliver, assign and perfect all Intellectual Property Rights relating to the Work Product in the Statement of Work, and any of the Company’s other related obligations thereto, pursuant to the terms of this section.  Furthermore, at the Client’s request and expense, the Company shall timely assist the Client in perfecting, registering and enforcing all Intellectual Property Rights relating to the Work Product in any and all countries.",
+      "heading": false
+    },
+    {
+      "text": "4.  Representations and Warranties",
+      "heading": false
+    },
+    {
+      "text": "a) Each Party represents and warrants to the other Party that it is free to enter into this Agreement and fully perform its obligations hereunder;",
+      "heading": false
+    },
+    {
+      "text": "b) The Company further represents and warrants that:",
+      "heading": false
+    },
+    {
+      "text": "Right to Furnish.  The services do not and shall not violate, infringe or misappropriate any Intellectual Property Rights of any third party.  Company has the right to furnish the services, and such delivery shall be free of all liens, claims and other restrictions on the Client’s permitted use as set forth herein.  Any third-party ownership rights or open-source code embedded in any Service or Work Product shall be disclosed in the Statement of Work.",
+      "heading": false
+    },
+    {
+      "text": " (2) Service Performance.  Company (i) has the facilities, experience and expertise necessary to perform the services, and (ii) shall perform the services in accordance with the highest professional and industry standards and this Agreement, in a timely manner using qualified personnel.  The services and any related fees shall be at all times comparable to or better than the similar services of similar volume offered by the Company to any of its other similarly-situated, commercial customers.  All persons who perform services shall at the time of such services be employees of the Company and shall have the requisite professional skills and judgment necessary to perform such services in compliance with Company’s obligations hereunder.  In the event of failure of the above warranties within one (1) year from Acceptance by the Client, at no cost to the Client and at the Client’s option, Company shall either: (A) qualitatively and functionally reperform, repair or replace within five (5) business days of the Client'’s notice of the defect, with its proper equivalent, or (B) refund to the Client the fees paid for the defective services.",
+      "heading": false
+    },
+    {
+      "text": "(3) Security.  Company’s security procedures and systems are and shall remain adequate to protect and maintain the confidentiality of the Client's Confidential Information and comply with the Client’s policies and procedures.  Such security measures shall ensure the security and confidentiality of Customer Information, protect against any anticipated threats or hazards to the security or integrity of Confidential Information, and protect against improper access to or use of Confidential Information.",
+      "heading": false
+    },
+    {
+      "text": " (4) Security and “No-Virus” Warranties; Remedies. Company represents, warrants andcovenants that:",
+      "heading": false
+    },
+    {
+      "text": " (i) No Disabling Items.  Company shall not introduce into any the Client System, any code, device, criteria, mechanism or function which may be used to restrict, disable, damage, destroy or otherwise shut down, or alter the functionality of, specifications for, or access to, all or any portion of the Client Systems.  Such unauthorized activity includes, without limitation, the introduction of any computer code, programs or programming devices that are designed to, or which disrupt, modify, delete, deactivate, harm or otherwise impede any portion of the Client Systems in any manner, including aesthetic disruptions or distortions. ",
+      "heading": false
+    },
+    {
+      "text": " (ii) No Malicious Codes.  Company shall not introduce into any the Client System, any malicious code, commands, instructions, programs or other internal components (e.g., a computer “virus,” computer “worm,” computer “time bomb,” “Trojan horse,” “back door,” or malware) or any blended or convergent combination thereof.",
+      "heading": false
+    },
+    {
+      "text": " (iii) Security and Virus Protection.  The Company shall not connect to or install any software, hardware or other equipment on any Client System without the prior, written approval of the Client’s Enterprise Security Unit.  Prior to connecting to or installing any software, hardware or other equipment on any Client System, the Company shall ensure that the virus protection being used in connection with such activities is continually protected by the same release of commercial virus protection as used and/or approved by the Client.",
+      "heading": false
+    },
+    {
+      "text": " (iv) Security and “No-Virus” Warranties Remedies.  In the event of failure of any of the above security and “no-virus” warranties, Company shall promptly eliminate such malady at its own cost and expense.  In addition to this remedy, and notwithstanding any limitation of liability set forth in this Agreement, Company acknowledges and agrees that, the expenses the Client and the the Client Systems shall incur by reason of such a failure, Company shall pay to the Client, as liquidated damages, for each such event of failure, all expenses and costs incurred by the Client to restore the affected the Client Systems to their state prior to such failure of warranty (including, but not limited to, the cost of repairs, travel expenses, replacement hardware and software.",
+      "heading": false
+    },
+    {
+      "text": " 5.  Indemnification.",
+      "heading": false
+    },
+    {
+      "text": "Company hereby undertakes and agrees to indemnify and keep and hold the Client harmless from and against all claims, proceedings, damages, losses, actions, costs and expenses arising as a consequence of its wrongful or negligent act or omission or any breach of this Agreement (including but not limited to any breach of third party intellectual property right(s)) and/or breach of law, and/or the conduct of Company or any officers, employees, sub-contractors due to obligations to be performed by Company or any officers, employees, sub-contractors under this Agreement. Further, the Company hereby undertakes and agrees to indemnify and keep and hold the Client harmless in respect of any obligation that may be imposed on the Client to pay any such taxes or resulting from the Company being determined not to be an independent contractor.",
+      "heading": false
+    },
+    {
+      "text": "At no expense to Client, the Company shall defend, indemnify and hold harmless Client, and its successors, assigns, officers, directors and employees (collectively, “Indemnitees”) from damage, loss, liability, costs and expenses of any kind (including reasonable attorneys’ fees) (collectively, “Loss”) relating to or arising out of any claim or threatened claim that any service and/or Work Product, any portion thereof, or the use thereof, infringes or violates any Intellectual Property Right.  In addition to Client'’s other rights and the Company’s obligations hereunder, if all or any part of a service is, or in the opinion of the Company may become, the subject of any claim or suit for infringement of any Intellectual Property Right,  and in the event of any adjudication that the Work Product or any part thereof does infringe or if the use of the Work Product or any part thereof is enjoined, the Company at its expense shall promptly: (a) procure for Client, at no additional cost to Client, the right to use the Work Product or the affected part thereof; or, to the extent such option is not available to the Company on commercially reasonable terms following best efforts to procure such right (b) replace the Work Product or affected part with a modified or substituted Work Product or part that does not violate any third party’s Intellectual Property Rights and that is qualitatively and functionally at least the equivalent of the affected Work Product or part.  If neither (a) nor (b) is available to the Company on commercially reasonable terms following best efforts to procure the same, and the Company has so advised Client, or if the Company has not promptly performed in accordance with (a) or (b) above, Client may, at its option, surrender the services purchased under this Agreement in whole or in part and receive a refund of the aggregate payments made by Client for the applicable services. ",
+      "heading": false
+    },
+    {
+      "text": " 6. Limited Warranty; Limitation of Liability",
+      "heading": false
+    },
+    {
+      "text": "Notwithstanding anything otherwise contained in this Agreement, the total aggregate liability of the company under this Agreement for all damages, losses, causes of action, whether in contract or otherwise for any consequential, incidental, indirect, special, punitive or other such loss or damage, including but not limited to those such as and/or resulting from loss of profits, loss of business, business interruption, loss of business information, depletion of goodwill, loss, pure economic loss and/or similar losses, however arising in connection with the Work or in connection with the performance or contemplated performance of this Agreement, shall be limited to the lower of  (a) total amounts paid to the Company under this Agreement or (b) actual loss. In the event, the loss/damage is caused on account of negligence or breach of third party intellectual property right(s) or breach of statutory duty, obligation/s or misrepresentation or otherwise the provisions governing limitation of the Company’s liability hereinabove mentioned shall not apply and the liability of the Company shall be the actual loss suffered by the Client, including but not limited to any legal or other expenses incurred by the Client in this regard..",
+      "heading": false
+    },
+    {
+      "text": "7.Confidentiality",
+      "heading": false
+    },
+    {
+      "text": "7.1 Definition.  “Confidential Information” means all information provided by the disclosing party (the “Disclosure”) to the receiving party (the “Recipient”) hereunder that is proprietary and/or non-public related to the past, present and future business activities of the Disclosure, its Affiliates and Agents, including, without limitation, all information related to: (a) a party’s employees, customers, and third-party contractors (including all contact information, individual information regarding gender, age, Social Security numbers, account numbers, financial and health information, and information regarding such person'’s/entity'’s relationship to the Disclosure); (b) a party’s operational and business proposals and plans, pricing, financial information, methods, processes, code, data, lists (including customer lists), inventions, apparatus, statistics, programs, research, development, information technology, network designs, passwords, sign-on codes, and usage data; (c) the terms of this Agreement; (d) all Customer Information (as defined), and/or (e) any other information that is designated as confidential by the Discloser.  All of the Discloser'’s Confidential Information, including any derivative works thereof, is, and shall remain, proprietary to the Discloser.",
+      "heading": false
+    },
+    {
+      "text": "7.2 Exceptions.  Confidential Information does not include information that is or was, at the time of the disclosure: (a) generally known or available to the public; (b) received by Recipient from a third- party; (c) already in Recipient’s possession prior to the date of receipt from Discloser; or (d) independently developed by Recipient; provided in each case that such forgoing information was not delivered to or obtained by Recipient as a result of any breach of this Agreement, the Law or any contractual, ethical or fiduciary obligation owed to Discloser.  Recipient may disclose Discloser’s Confidential Information to the extent such disclosure is required by Law, provided that Discloser is given prompt notice of such disclosure requirement, to the extent practicable, so that Discloser has an opportunity to petition for protective concealment of or oppose such disclosure.",
+      "heading": false
+    },
+    {
+      "text": "7.3 Treatment of Confidential Information:  At all times Recipient shall: (a) use the same standard of care to protect the Confidential Information as it uses to protect its own confidential information of a similar nature, but not less than a commercially reasonable standard of care; (b) not use the Discloser’s Confidential Information other than as necessary to perform its obligations under this Agreement; (c) not disclose, distribute, or disseminate the Confidential Information to any third party; and (d) disclose Discloser’s Confidential Information to its Agents and/or Affiliates on a “need to know” basis only, provided that each Affiliate and Agent is bound by obligations of confidentiality and restrictions against disclosure at least as restrictive as those contained herein.  the Company shall keep appropriate, complete and accurate records of the Client’s Confidential Information and, if disclosed to third parties, records as to any disclosures.  the Client, and any governmental entity with jurisdiction or oversight authority, may, upon prior notice to the Company, audit the Company’s records of the Client’s Confidential Information and speak with the Company’s personnel who are familiar with such records.",
+      "heading": false
+    },
+    {
+      "text": "7.4 Return of Confidential Information:  Upon the written request of Discloser, Recipient shall return or destroy (and certify such destruction in a signed writing) all Confidential Information of Discloser, including all copies thereof and materials incorporating such Confidential Information, whether in physical or electronic form.  Each party may retain a copy of the other party’s Confidential Information solely for archival purposes.  To the extent that it is impracticable to return or destroy any Confidential Information, and with respect to any copies retained for archival purposes, Recipient shall continue to maintain the Confidential Information in accordance with this Agreement.  The confidentiality obligations set forth in this Agreement shall survive the termination of this Agreement and remain in full force and effect until such Confidential Information, through no act or omission of Recipient, ceases to be Confidential Information as defined hereunder.",
+      "heading": false
+    },
+    {
+      "text": "8.Force Majeure",
+      "heading": false
+    },
+    {
+      "text": "Neither Party will be liable to the other Party for any breach of this Agreement, which is caused by or results from Force Majeure, beyond its reasonable control.  If one Party is affected by an event of Force Majeure it will promptly notify the other Party of the occurrence of that event and the Parties will discuss and seek to reach an agreement in good faith that is fair and reasonable.  For the purpose of this Agreement the term “Force Majeure” shall mean events, which reasonably prevent the performance of any Party’s obligations under this Agreement. Force Majeure includes but is not limited to acts of God, including fires, explosions, earthquakes, drought, and floods; war, invasion and an act of foreign enemies; rebellion, revolution, insurrection, or military or usurped power, or civil war; acts or threats of terrorism; riot, commotion, strikes, go-slows, lock outs or disorder, etc.",
+      "heading": false
+    },
+    {
+      "text": " 9. Non-Compete and Non-Solicitation",
+      "heading": false
+    },
+    {
+      "text": "It is hereby agreed that the Company will, during the subsistence of this Agreement, devote its substantial time towards performing its obligations under this Agreement. Company or any core team member of the Company as identified in the applicable Work Order pursuant to this Agreement shall not, during the term of this Agreement and for a period of one (1) year after its termination, provide similar or identical services or a specific approach of work as described in the applicable Work Order (Partner module in the brokerage industry) to any other third party. The company recognizes that Client may engage its other representative/team member to perform similar services from time to time, and this Agreement shall not prevent Client from using such representatives/team members.",
+      "heading": false
+    },
+    {
+      "text": "During the term of this Agreement and for a period of one year thereafter, the Company and the Client agree not to directly solicit, induce, or attempt to persuade any employee of the other party to terminate employment, or to enter into a relationship with it or any business organization in which it may be directly or indirectly involved. However, in no event shall responses to a general advertisement for employees or the general solicitation of employees through a public advertisement by or on behalf of the parties to this Agreement be deemed a breach of this Clause.",
+      "heading": false
+    },
+    {
+      "text": " 10.      Term and Termination",
+      "heading": false
+    },
+    {
+      "text": "This Agreement shall commence on the date hereof and shall terminate after the later of either the completion of all Work assignments mutually agreed upon pursuant to this Agreement and its attached Work Order(s). In the event that a Party breaches any provision of this Agreement, and such breach is not curable, or if curable, such breach is not cured within 30 days of receipt of notice of such breach, the non-breaching party may terminate this Agreement upon written notice to the breaching party.  In the event of such termination, all indemnities shall survive and Company shall be paid in accordance with this Agreement for the services rendered prior to the effective date of termination.  Either party may terminate this Agreement upon thirty 30 days prior written notice to the other party; provided, however, that in the event of such termination by Client, Company shall complete performance of any existing Work Order(s).",
+      "heading": false
+    },
+    {
+      "text": "11.Notices",
+      "heading": false
+    },
+    {
+      "text": "All notices and other communications given to any party hereto in accordance with the provisions of this letter agreement shall be in writing and shall be deemed to have been given (i) on the date of receipt if hand delivered, (ii) three days after being sent by registered or certified mail, postage prepaid, return receipt requested, or (iii) on the date of receipt, with receipt confirmed, if sent by overnight courier (as per courier’s records), facsimile, or other telecommunications equipment, in each case at the address set forth on the first page of this Agreement or in accordance with the latest unrevoked direction from such Party.",
+      "heading": false
+    },
+    {
+      "text": "12.   Arbitration",
+      "heading": false
+    },
+    {
+      "text": "Any dispute(s), controversy/(ies) or claim(s) arising out of or relating to this Agreement including but not limited to the validity, interpretation, breach or termination thereof, shall be amicably settled through mutual consultation and escalation. If the Parties are unable to settle the dispute(s) amicably as aforesaid, within a period of 30 (thirty) days, then any Party may refer the dispute(s) to arbitration in accordance with the provisions of the Arbitration and Conciliation Act, 1996, for the time being in force. Both Parties shall mutually appoint a sole arbitrator to resolve the dispute(s). In case of disagreement as to the appointment of the sole arbitrator, the sole arbitrator shall be appointed in accordance with the Arbitration and Conciliation Act, 1996 and the final award passed by the sole arbitrator shall be final and binding on both Parties. The venue of arbitration shall be Pune, India and the language of arbitration proceedings shall be English. Each Party shall bear the cost of preparing and presenting its case, and the cost of arbitration, including fees and expenses of the arbitrators, shall be shared equally by the disputing parties, unless the award otherwise provides.",
+      "heading": false
+    },
+    {
+      "text": " 13.    General",
+      "heading": false
+    },
+    {
+      "text": " (a). This Agreement, including any attachments hereto or Work Order/ SoW issued hereunder, constitutes the entire agreement between the Parties with respect to the subject matter hereof and supersedes all prior agreements, whether oral or written, between the parties with respect to such subject matter.  This Agreement may be amended or modified only by written agreement of the Client and Company.  This Agreement shall bind and insure to the benefit of the parties hereto and their respective successors and assigns.  The paragraph headings of this letter agreement are included merely for convenience of reference and are not to be used in interpreting this letter agreement.  The provisions of this agreement are several and if any one or more such provisions shall be determined invalid, illegal or unenforceable, in whole or in part, the validity, legality and enforceability of any of the remaining provisions or portions thereof shall not in any way be affected.  Any failure to enforce any provision of the Agreement shall not constitute a waiver thereof or of any other provision.",
+      "heading": false
+    },
+    {
+      "text": "(b). Independent Contractor.  Company shall perform its services as an independent contractor.  Nothing contained in this Agreement shall be construed as creating any agency, partnership or other form of joint enterprise between the parties.  Neither Party shall have authority to contract for or bind the other in any manner whatsoever.  The Client will retain control over, and responsibility for, all decisions affecting its business.",
+      "heading": false
+    },
+    {
+      "text": "(c). Assignment. This Agreement may not be assigned by any Party hereto without the prior written consent of the other Party; except that either Party may assign this Agreement to an affiliate or in connection with any merger, consolidation or sale of all or substantially all of its assets or any similar transaction or by operation of law.  Any such assignee shall undertake to fulfill each of the obligations of the assignee hereunder.",
+      "heading": false
+    },
+    {
+      "text": " (d). Interpretation, construction and enforcement of this Agreement shall be pursuant to the laws of India.",
+      "heading": false
+    },
+    {
+      "text": "             IN WITNESS WHEREOF, the parties have caused this Agreement to be signed by their duly authorized representatives as of the day and year set forth on the first page of this Agreement.",
+      "heading": false
+    },
+    {
+      "text": " Company: {providerName}                      Client: {companyFullName}",
+      "heading": true
+    },
+    {
+      "text": " Sign: _____________________________              Sign:                                                              ",
+      "heading": true
+    },
+    {
+      "text": " Name: {providerSignatory}Name: {clientName}",
+      "heading": true
+    },
+    {
+      "text": " Title: {providerDesignation}                             Title:  {clientDesignation}",
+      "heading": true
+    },
+    {
+      "text": " Date: {effectiveDate}Date:  {effectiveDate}",
+      "heading": true
+    }
+  ],
+  "nda": [
+    {
+      "text": "MUTUAL NON-DISCLOSURE AGREEMENT (MNDA)",
+      "heading": true
+    },
+    {
+      "text": "This Non-Disclosure Agreement (hereinafter “Agreement”) is effective as of {effectiveDate} by and between {providerName}, a company having its registered office at {providerAddress} (“{providerName}”) and {companyFullName} having its office at {companyAddress} ({companyFullName}).",
+      "heading": false
+    },
+    {
+      "text": "{providerName} and {companyFullName} are individually referred to as ‘Party’ and collectively as ‘Parties’.",
+      "heading": false
+    },
+    {
+      "text": "The Party disclosing Confidential Information under this Agreement shall be referred to as Disclosing Party and the Party receiving Confidential Information shall be referred to as Receiving Party.",
+      "heading": false
+    },
+    {
+      "text": "1. Purpose: Whereas, the Parties wish to explore possible business opportunities, during which either Party will be required to disclose certain confidential Information to the other.",
+      "heading": false
+    },
+    {
+      "text": "2.  Confidential Information and Exclusions: Confidential Information shall mean and include (a) any information received by the Receiving Party which is identified by Disclosing Party as confidential; (b) all information including product concepts developed by any party or parties, documents, business plans, source code, software, technical, financial, marketing, customer, business information, specifications, analysis, designs, drawings, data, computer programs, any information relating to personnel or affiliates of a Party, disclosed by Disclosing Party whether orally or as embodied in tangible materials. Confidential Information shall however exclude any information which a) is in the public domain; (b) was known to the Party of such disclosure or becomes known to the Party without breach of any confidentiality agreement; (c) is independently developed by the Party without use of Confidential Information disclosed herein; (d) is disclosed pursuant judicial order or requirement of the governmental agency or by operation of law, provided that the Receiving Party shall give the Disclosing Party ten (10) days prompt written notice of such order or requirement and an opportunity to contest or seek an appropriate protective order.",
+      "heading": false
+    },
+    {
+      "text": "3. Confidentiality Obligations: The Receiving Party shall maintain confidentiality and prevent disclosure of Confidential Information of the Disclosing party with at least the same degree of care as it uses to protect its own confidential information but in no event with less than reasonable care. The Receiving Party agrees not to disclose Confidential Information to any third parties and shall restrict disclosure of Confidential Information only to a limited group of Recipient's directors, concerned officers, employees, attorneys, subcontractors or professional advisors who need to have access to the Confidential Information and each of whom shall be informed by Receiving Party of the confidential nature of Confidential Information and agree to observe the same terms and conditions set forth herein as if specifically named a Party hereto. The Receiving Party shall not use the Confidential Information in any way to create a derivative work out of it or reverse engineer or use it for any commercial purpose or for any purpose detrimental to the Disclosing Party. The Receiving Party shall not make copies of Confidential Information unless the same is reasonably necessary. The Receiving Party shall immediately notify the Disclosing Party in the event of any unauthorized use or disclosure of the Confidential Information and reasonably support the Disclosing Party in taking necessary remedial action.",
+      "heading": false
+    },
+    {
+      "text": "4. Non-solicit: Parties agree that they shall not, directly or indirectly, interfere with, or seek to interfere with (i) the relationship between another Party and any of the other Party’s customers. Party shall not, directly or indirectly, hire, contract with, induce or attempt to influence, any individual or entity who is an employee, contractor, customer agent or representative of another Party to terminate or otherwise impair his/her or its relationship with the other Party.",
+      "heading": false
+    },
+    {
+      "text": "5. No Warranty: All Confidential Information is provided ‘as is.’ Neither Party makes any warranty, express, implied or otherwise, regarding its accuracy, completeness or performance. ",
+      "heading": false
+    },
+    {
+      "text": "6. No License: Each Party recognizes that nothing in this Agreement is construed as granting it any proprietary rights, by license or otherwise, to any Confidential Information or to any intellectual property rights based on such Confidential Information.",
+      "heading": false
+    },
+    {
+      "text": "7. Return: Upon return request of the Disclosing Party the Receiving Party shall promptly return all Confidential Information and all copies thereof.",
+      "heading": false
+    },
+    {
+      "text": "8. Term: The term of this Agreement shall be one (1) year from the Effective Date. The obligations stated in this Agreement shall survive for 2 (two) years post termination by 10 days’ written notice or expiry of the Agreement.",
+      "heading": false
+    },
+    {
+      "text": " 9.  This Non-Disclosure Agreement shall remain in effect at all times whereby parties maintain a working relationship, and for 2 years following the last information exchange occurrence date thereafter.",
+      "heading": false
+    },
+    {
+      "text": "10. Remedies: The Receiving Party agrees that any violation of this Agreement will cause irreparable injury to the Disclosing Party, entitling the Disclosing Party to obtain injunctive relief in addition to other legal remedies.",
+      "heading": false
+    },
+    {
+      "text": "11. Governing Law and Jurisdiction: This Agreement may be governed and construed in accordance with the laws of India and shall be subject to the jurisdiction of courts in Pune, India.",
+      "heading": false
+    },
+    {
+      "text": "12.   Miscellaneous: This Agreement constitutes the entire agreement between the Parties with respect to the subject matter hereof and supersedes all prior commitments/ understanding in this regard and may not be amended or modified except by a writing signed by a duly authorized representative of the respective Parties. This Agreement may be executed in several counterparts (physical or electronic form), each of which shall be deemed an original, but all of which together shall constitute one and the same instrument. This Agreement may not be assigned or transferred except by mutual written consent of both Parties",
+      "heading": false
+    },
+    {
+      "text": " Company: {providerName}                      Client: {companyFullName}",
+      "heading": true
+    },
+    {
+      "text": " Sign: _____________________________              Sign:                                                              ",
+      "heading": false
+    },
+    {
+      "text": " Name: {providerSignatory}Name:  {clientName}",
+      "heading": true
+    },
+    {
+      "text": " Title: {providerDesignation}                             Title:    {clientDesignation}",
+      "heading": true
+    },
+    {
+      "text": " Date: {effectiveDate}Date:    {effectiveDate}",
+      "heading": true
+    }
+  ]
+}

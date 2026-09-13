@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: vedryxtech-document-studio
+    runtime: docker
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
