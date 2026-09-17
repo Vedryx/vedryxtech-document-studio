@@ -128,3 +128,49 @@ test('dark workspace fits small phones, landscape, tablets and wide desktops', a
     }
   }
 });
+
+test('SOW pricing, currency, omission, waiver and downloads work', async ({ page }, testInfo) => {
+  await page.goto('/');
+  await page.locator('#sow-choice').check();
+  await expect(page.locator('#sow-heading')).toBeVisible();
+  await expect(page.locator('.paper h3')).toHaveText('Statement of Work');
+  for (const [id, value] of Object.entries(details)) await page.locator(`#${id}`).fill(value);
+  await page.locator('#sow-project').fill('Voice agent pilot');
+  await page.locator('#sow-scope').fill('Outbound calling and CRM integration.');
+  await page.locator('#sow-deliverables').fill('Working agent approved through client UAT.');
+  await page.locator('#sow-timeline').fill('4 weeks after access is provided.');
+  await page.locator('#rate-minute').fill('2.50');
+  await page.locator('#rate-callback').fill('0');
+  await page.locator('#sow-currency').selectOption('USD');
+  await expect(page.locator('.paper-body')).toContainText('USD 2.50 per minute');
+  await expect(page.locator('.paper-body')).not.toContainText('Team callbacks');
+  await page.locator('#sow-paymentTerms').fill('Monthly invoices, payable within 30 days. Taxes additional.');
+  const single = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Download SOW only' }).click();
+  expect((await single).suggestedFilename()).toMatch(/SOW-.*\.docx$/);
+  await page.getByRole('radio', { name: /Option B/ }).check();
+  await page.locator('#sow-currency').selectOption('AED');
+  await page.locator('#rate-platform').fill('5000');
+  await page.locator('#rate-visit').fill('500');
+  await page.locator('#sow-visitDefinition').fill('Completed visit confirmed by the client CRM, excluding cancellations.');
+  await expect(page.locator('.paper-body')).not.toContainText('Voice calling:');
+  await expect(page.locator('.sow-calculator')).toContainText('Total: AED 5,000.00');
+  await page.locator('#example-visits').fill('5');
+  await expect(page.locator('.sow-calculator')).toContainText('Total: AED 7,500.00');
+  await page.locator('#example-visits').fill('11');
+  await expect(page.locator('.sow-calculator')).toContainText('Total: AED 5,500.00');
+  await page.locator('#sow-currency').selectOption('INR');
+  await page.locator('#dda-choice').check();
+  await page.getByRole('tab', { name: 'SOW', exact: true }).click();
+  const bundle = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Generate agreements', exact: true }).click();
+  expect((await bundle).suggestedFilename()).toMatch(/AGREEMENTS-.*\.zip$/);
+  await expect(page.getByRole('status')).toContainText('4 agreements are ready');
+  for (const width of [320, 375, 768, 1440]) {
+    await page.setViewportSize({ width, height: 1000 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  }
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.locator('#sow').scrollIntoViewIfNeeded();
+  await page.screenshot({ path: `qa/sow-${testInfo.project.name}.png`, fullPage: true });
+});

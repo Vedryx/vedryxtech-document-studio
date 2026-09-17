@@ -1,12 +1,15 @@
 import { z } from 'zod';
+import { sowSchema } from './sow';
 export const BRAND = 'vedryxTech';
-export const agreementTypes = ['nda', 'msa', 'dda'] as const;
+export const agreementTypes = ['nda', 'msa', 'dda', 'sow'] as const;
 export type AgreementType = typeof agreementTypes[number];
 export const agreementLabels: Record<AgreementType, string> = {
+  sow: 'Statement of Work',
   nda: 'Mutual Non-Disclosure Agreement', msa: 'Master Services Agreement',
   dda: 'Data Protection & Restricted Disclosure Agreement',
 };
 export const agreementDescriptions: Record<AgreementType, { short: string; purpose: string; kicker: string }> = {
+  sow: { short: 'Statement of work', purpose: 'Set scope, pricing and payment', kicker: 'PROJECT SCOPE & COMMERCIAL TERMS' },
   nda: { short: 'Mutual non-disclosure', purpose: 'Protect shared information', kicker: 'CONFIDENTIALITY & TRUST' },
   msa: { short: 'Master services', purpose: 'Define your working relationship', kicker: 'SERVICES & COLLABORATION' },
   dda: { short: 'Data protection', purpose: 'Limit access to lead data', kicker: 'LEAD DATA & RESTRICTED ACCESS' },
@@ -26,10 +29,16 @@ export const agreementSchema = z.object({
   providerSignatory: text('vedryxTech signatory name', 120),
   providerDesignation: text('vedryxTech signatory title', 120),
   effectiveDate: date,
+  sow: z.unknown().optional(),
   agreements: z.array(z.enum(agreementTypes)).min(1, 'Select at least one agreement').max(agreementTypes.length).refine(v => new Set(v).size === v.length, 'Select each agreement only once'),
-});
-export type AgreementInput = z.infer<typeof agreementSchema>;
-export type FieldName = Exclude<keyof AgreementInput, 'agreements'>;
+}).superRefine((input, ctx) => {
+  if (input.agreements.includes('sow')) {
+    const result = sowSchema.safeParse(input.sow);
+    if (!result.success) for (const issue of result.error.issues) ctx.addIssue({ code: 'custom', path: ['sow', ...issue.path], message: issue.message });
+  }
+}).transform(input => ({ ...input, sow: input.agreements.includes('sow') ? sowSchema.parse(input.sow) : undefined }));
+export type AgreementInput = Omit<z.infer<typeof agreementSchema>, 'sow'> & { sow?: z.infer<typeof sowSchema> };
+export type FieldName = Exclude<keyof AgreementInput, 'agreements' | 'sow'>;
 export function formatDate(value: string) { const [year, month, day] = value.split('-'); return `${day}/${month}/${year}`; }
 export function templateValues(input: AgreementInput) {
   return { ...input, providerName: BRAND, effectiveDate: formatDate(input.effectiveDate) };

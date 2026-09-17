@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import PizZip from 'pizzip';
 import { DOMParser } from '@xmldom/xmldom';
-import { agreementSchema, agreementTypes, type AgreementInput } from '../src/lib/agreement';
+import { agreementSchema, type AgreementInput } from '../src/lib/agreement';
 import { generateDocument, generateDownload } from '../src/lib/generate';
 import { POST } from '../src/app/api/documents/route';
 import originalPreview from '../src/data/preview.json';
+import { emptySow, sowParagraphs, minorUnits, platformTotal, type SowInput } from '../src/lib/sow';
 import dda from '../src/data/dda.json';
 const preview = { ...originalPreview, dda };
 const sample: AgreementInput = {
@@ -17,7 +18,7 @@ const sample: AgreementInput = {
 const word = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const parser = new DOMParser({ errorHandler: { warning: () => {}, error: message => { throw new Error(message); }, fatalError: message => { throw new Error(message); } } });
 function paragraphs(xml: string) { return Array.from(parser.parseFromString(xml, 'application/xml').getElementsByTagNameNS(word, 'p')).map(p => Array.from(p.getElementsByTagNameNS(word, 't')).map(t => t.textContent).join('')).filter(p => p.trim()); }
-for (const type of agreementTypes) {
+for (const type of ['nda', 'msa', 'dda'] as const) {
   test(`${type}: valid branded DOCX, substituted values, unchanged clause text and matching preview`, async () => {
     const output = await generateDocument(sample, type);
     const zip = new PizZip(output);
@@ -36,7 +37,7 @@ for (const type of agreementTypes) {
         parser.parseFromString(file.asText(), 'application/xml');
       }
     }
-    const values: Record<string, string> = { ...sample, agreements: '', providerName: 'vedryxTech', effectiveDate: '14/09/2026' };
+    const values: Record<string, string> = { ...sample, sow: '', agreements: '', providerName: 'vedryxTech', effectiveDate: '14/09/2026' };
     const expected = preview[type].map(p => p.text.replace(/\{(\w+)\}/g, (_, key) => values[key]));
     // Word stores line breaks as w:br; the comparison strips those from the input.
     assert.deepEqual(paragraphs(document), expected.map(p => p.replaceAll('\n', '')));
@@ -89,4 +90,47 @@ test('API returns a private binary Word download for one agreement', async () =>
   assert.match(response.headers.get('cache-control')!, /no-store/);
   assert.match(response.headers.get('content-type')!, /wordprocessingml/);
   assert.ok(new PizZip(Buffer.from(await response.arrayBuffer())).file('word/document.xml'));
+});
+
+const sow: SowInput = { ...emptySow, project: 'Voice agent & CRM {pilot}', scope: 'Outbound voice workflows <approved>.\nCRM integration.', deliverables: 'Agent deployment; client UAT sign-off.', timeline: '4 weeks after receipt of CRM access.', visitDefinition: 'Completed visit verified in the CRM, excluding cancellations.', rates: { ...emptySow.rates, minute: '2.50', visit: '500', platform: '5000' } };
+test('SOW matches preview, escapes user content, retains logo and excludes omitted or inactive rates', async () => {
+  for (const currency of ['INR', 'USD', 'AED'] as const) {
+    for (const model of ['A', 'B'] as const) {
+      const input = agreementSchema.parse({ ...sample, agreements: ['sow'], sow: { ...sow, currency, model } });
+      const zip = new PizZip(await generateDocument(input, 'sow'));
+      const xml = zip.file('word/document.xml')!.asText();
+      assert.deepEqual(paragraphs(xml), sowParagraphs(input).map(p => p.text.replaceAll('\n', '')));
+      assert.equal(zip.file(/word\/media\//).length, 1);
+      for (const [name, file] of Object.entries(zip.files)) if (/\.(xml|rels)$/.test(name)) parser.parseFromString(file.asText(), 'application/xml');
+      const text = paragraphs(xml).join('\n');
+      assert.doesNotMatch(text, /Team callbacks|WhatsApp messages|Email messages|Apptware/i);
+      assert.match(text, new RegExp(currency + ' 500.00 per site visit'));
+      if (model === 'A') { assert.match(text, /Voice calling/); assert.doesNotMatch(text, /Platform fee|waiver/); }
+      else { assert.doesNotMatch(text, /Voice calling/); assert.match(text, /platform fee is waived/); }
+    }
+  }
+});
+test('SOW validation is conditional and rejects invalid or missing commercial terms', () => {
+  assert.equal(agreementSchema.safeParse(sample).success, true);
+  assert.equal(agreementSchema.safeParse({ ...sample, agreements: ['sow'] }).success, false);
+  for (const invalid of [{ rates: emptySow.rates }, { scope: '' }, { visitDefinition: '' }, { currency: 'EUR' }, { model: 'C' }, { rates: { ...sow.rates, minute: '-2' } }, { rates: { ...sow.rates, minute: '1.001' } }, { rates: { ...sow.rates, visit: '1e3' } }, { rates: { ...sow.rates, visit: 'Infinity' } }, { scope: '\u0000' }]) assert.equal(agreementSchema.safeParse({ ...sample, agreements: ['sow'], sow: { ...sow, ...invalid } }).success, false);
+  assert.equal(sowParagraphs({ ...sample, sow: { ...sow, rates: { ...sow.rates, callback: '0.00' } } }).some(p => p.text.includes('Team callbacks')), false);
+});
+test('platform waiver uses exact minor units below, at and above threshold', () => {
+  assert.equal(minorUnits('2.55'), 255);
+  assert.equal(platformTotal(500000, 0), 500000);
+  assert.equal(platformTotal(500000, 250000), 750000);
+  assert.equal(platformTotal(500000, 500000), 500000);
+  assert.equal(platformTotal(500000, 550000), 550000);
+  assert.equal(platformTotal(255, 254), 509);
+  assert.equal(platformTotal(255, 255), 255);
+});
+test('API downloads an SOW alone and all four agreements together', async () => {
+  for (const agreements of [['sow'], ['nda', 'msa', 'dda', 'sow']]) {
+    const response = await POST(request(JSON.stringify({ ...sample, agreements, sow })));
+    assert.equal(response.status, 200);
+    const zip = new PizZip(Buffer.from(await response.arrayBuffer()));
+    if (agreements.length === 1) assert.ok(zip.file('word/document.xml'));
+    else assert.equal(zip.file(/\.docx$/).length, 4);
+  }
 });

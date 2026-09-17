@@ -7,10 +7,13 @@ import { ArrowDownToLine, ArrowRight, Building2, Check, CheckCheck, ChevronRight
 import { agreementTypes, agreementDescriptions, agreementLabels, agreementSchema, type AgreementInput, type AgreementType, type FieldName, BRAND, filename, formatDate } from '@/lib/agreement';
 import originalPreview from '@/data/preview.json';
 import dda from '@/data/dda.json';
+import { emptySow, sowParagraphs } from '@/lib/sow';
+import SowEditor from './sow-editor';
 import ThemeToggle from './theme-toggle';
 const preview = { ...originalPreview, dda };
 
 const emptyForm: AgreementInput = {
+  sow: emptySow,
   companyFullName: '', companyAddress: '', clientName: '', clientDesignation: '',
   providerAddress: '', providerSignatory: '', providerDesignation: '', effectiveDate: '', agreements: ['nda', 'msa'],
 };
@@ -113,7 +116,7 @@ export default function DocumentStudio() {
     finally { setBusy(false); }
   }
   const previewValues: Record<string, string> = {
-    ...form, agreements: '', providerName: BRAND,
+    ...form, sow: '', agreements: '', providerName: BRAND,
     effectiveDate: form.effectiveDate ? formatDate(form.effectiveDate) : '[Effective date]',
   };
   const placeholderLabels: Record<string, string> = { ...labels, providerName: BRAND };
@@ -144,7 +147,7 @@ export default function DocumentStudio() {
         <div className="studio-grid">
           <form ref={formRef} onSubmit={event => { event.preventDefault(); void generate(); }} noValidate className="agreement-form">
             <section className="form-card"><div className="section-heading"><div className="step-number">01</div><div><h2>Choose your agreements</h2><p>Select one, or create the complete set.</p></div><Files size={19} className="section-icon" /></div>
-              <div className="agreement-options">{agreementTypes.map(type => <label className={`agreement-option ${type === 'dda' ? 'data-agreement-option' : ''} ${form.agreements.includes(type) ? 'selected' : ''}`} key={type} htmlFor={`${type}-choice`}>
+              <div className="agreement-options">{agreementTypes.map(type => <label className={`agreement-option ${form.agreements.includes(type) ? 'selected' : ''}`} key={type} htmlFor={`${type}-choice`}>
                 <input id={`${type}-choice`} type="checkbox" checked={form.agreements.includes(type)} onChange={() => toggle(type)} aria-describedby={errors.agreements ? 'agreement-error' : undefined} />
                 <div className="option-top">{type === 'nda' ? <ShieldCheck size={23} /> : type === 'dda' ? <LockKeyhole size={23} /> : <FileText size={23} />}<span className="custom-check">{form.agreements.includes(type) && <Check size={12} strokeWidth={3} />}</span></div>
                 <strong>{type.toUpperCase()}</strong><span>{agreementDescriptions[type].short}</span><small>{agreementDescriptions[type].purpose}</small>
@@ -159,6 +162,7 @@ export default function DocumentStudio() {
             <section className="form-card"><div className="section-heading"><div className="step-number">03</div><div><h2>Your company details</h2><p>Representing vedryxTech.</p></div><span className="brand-tag">vedryxTech</span></div>
               {field('providerAddress', true)}<div className="field-row">{field('providerSignatory')}{field('providerDesignation')}</div>
             </section>
+            {(form.agreements.includes('sow') || activeTab === 'sow') && <SowEditor value={form.sow ?? emptySow} errors={errors.sow} onChange={sow => { setForm(current => ({ ...current, sow })); setErrors(current => ({ ...current, sow: undefined })); }} />}
             <div className="generate-panel"><div className="generate-summary"><div className="small-file-stack"><Files size={22} /></div><div><strong>{form.agreements.length} agreement{form.agreements.length === 1 ? '' : 's'} selected</strong><span>Editable Word {form.agreements.length > 1 ? 'files · downloaded as ZIP' : 'document · .docx'}</span></div></div>
               <button className="button primary generate-button" disabled={busy || !form.effectiveDate} type="submit">{busy ? <><LoaderCircle size={18} className="spin" />Preparing documents…</> : <><Sparkles size={17} />Generate {form.agreements.length > 1 ? 'agreements' : 'agreement'}<ArrowRight size={18} /></>}</button>
               <p className="privacy-note"><ShieldCheck size={13} />Generated on demand. Documents aren’t saved on the server.</p>
@@ -173,13 +177,13 @@ export default function DocumentStudio() {
               }} onClick={() => setActiveTab(type)} className={activeTab === type ? 'current' : ''}>{type.toUpperCase()}</button>)}</div><span><FileText size={13} /> WORD DOCUMENT</span></div>
                 <div className="paper-scroll" id="agreement-preview" role="tabpanel" aria-labelledby={`${activeTab}-tab`} tabIndex={0}><article className="paper" key={activeTab}><div className="paper-brand"><Image src="/brand/logo.svg" alt="vedryxTech" width={145} height={29} style={{ height: 'auto' }} /><span>AGREEMENT</span></div><div className="paper-rule" /><div className="paper-kicker">{agreementDescriptions[activeTab].kicker}</div>
                   <h3>{agreementLabels[activeTab]}</h3><div className="paper-meta"><span>EFFECTIVE DATE</span><strong>{form.effectiveDate ? formatDate(form.effectiveDate) : 'DD/MM/YYYY'}</strong></div>
-                  <div className="paper-body">{preview[activeTab].slice(1).map((paragraph, index) => <p key={index} className={paragraph.heading ? 'clause-heading' : ''}>{renderText(paragraph.text)}</p>)}</div>
+                  <div className="paper-body">{(activeTab === 'sow' ? sowParagraphs(form) : preview[activeTab]).slice(1).map((paragraph, index) => <p key={index} className={paragraph.heading ? 'clause-heading' : ''}>{activeTab === 'sow' ? paragraph.text : renderText(paragraph.text)}</p>)}</div>
                   <div className="paper-footer"><span>vedryxTech</span><span>End of agreement</span></div>
                 </article></div><div className="preview-bottom"><span><CheckCheck size={14} />vedryxTech branding applied</span><button type="button" aria-label={`Download ${activeTab.toUpperCase()} only`} disabled={busy} onClick={() => void generate([activeTab])}><ArrowDownToLine size={16} /></button></div>
               </div>
               <p className="preview-disclaimer">Text preview · Page layout and signatures are formatted in the Word download.</p>
-              <div className="readiness"><div><span>DETAILS COMPLETED</span><strong>{completed}<span> / {Object.keys(labels).length}</span></strong></div><div className="progress-track" role="progressbar" aria-label="Details completed" aria-valuenow={completed} aria-valuemin={0} aria-valuemax={Object.keys(labels).length}><span style={{ width: `${progress}%` }} /></div><p>{progress === 100 ? 'All details are in. Your agreements are ready to generate.' : 'Complete the details to prepare your agreements.'}</p></div>
-              <div className="template-note"><FileCheck2 size={19} /><p><strong>{activeTab === 'dda' ? 'Commitments to verify before live calling.' : 'A consistent starting point.'}</strong><br />{activeTab === 'dda' ? 'The DDA requires encrypted storage, restricted access and an agreed operating schedule before processing leads. It does not certify your calling system.' : 'The NDA and MSA use your supplied templates. Review the final terms before signing.'}</p></div>
+              <div className="readiness"><div><span>DETAILS COMPLETED</span><strong>{completed}<span> / {Object.keys(labels).length}</span></strong></div><div className="progress-track" role="progressbar" aria-label="Details completed" aria-valuenow={completed} aria-valuemin={0} aria-valuemax={Object.keys(labels).length}><span style={{ width: `${progress}%` }} /></div><p>{progress === 100 ? 'Party details are complete. The SOW also requires scope and pricing.' : 'Complete the details to prepare your agreements.'}</p></div>
+              <div className="template-note"><FileCheck2 size={19} /><p><strong>{activeTab === 'dda' ? 'Commitments to verify before live calling.' : activeTab === 'sow' ? 'Scope and pricing, agreed together.' : 'A consistent starting point.'}</strong><br />{activeTab === 'dda' ? 'The DDA requires encrypted storage, restricted access and an agreed operating schedule before processing leads. It does not certify your calling system.' : activeTab === 'sow' ? 'This SOW accompanies the MSA. Review deliverables, billing definitions and payment terms before both parties sign.' : 'The NDA and MSA use your supplied templates. Review the final terms before signing.'}</p></div>
             </div>
           </aside>
         </div>
@@ -189,6 +193,6 @@ export default function DocumentStudio() {
       </div>}
     </main>
     <div className={`toast ${notice ? 'visible' : ''}`} role="status" aria-live="polite">{notice && <><FileText size={18} /><span>{notice}</span><button aria-label="Dismiss notification" onClick={() => setNotice('')}><X size={16} /></button></>}</div>
-    <dialog ref={helpRef} className="help-dialog" onCancel={() => setHelp(false)} onClick={event => { if (event.target === event.currentTarget) setHelp(false); }}><button className="close-dialog" aria-label="Close help" onClick={() => setHelp(false)}><X size={20} /></button><div className="eyebrow">DOCUMENT STUDIO</div><h2>From details to documents.</h2><ol><li><strong>Choose your agreements.</strong> Select an NDA, MSA, data-protection agreement (DDA), or any combination.</li><li><strong>Fill in both parties’ details.</strong> Enter registered addresses and authorized signatories. Watch the text preview update.</li><li><strong>Download and review.</strong> One agreement downloads as Word; multiple agreements come in a ZIP. Signatures remain blank for each party to sign.</li></ol><p>Session downloads stay available until you refresh or close the page. The NDA and MSA use your supplied templates. The DDA sets safeguards to verify before live lead processing.</p><button className="button primary" onClick={() => setHelp(false)}>Got it<Check size={16} /></button></dialog>
+    <dialog ref={helpRef} className="help-dialog" onCancel={() => setHelp(false)} onClick={event => { if (event.target === event.currentTarget) setHelp(false); }}><button className="close-dialog" aria-label="Close help" onClick={() => setHelp(false)}><X size={20} /></button><div className="eyebrow">DOCUMENT STUDIO</div><h2>From details to documents.</h2><ol><li><strong>Choose your agreements.</strong> Select an NDA, MSA, data-protection agreement (DDA), SOW, or any combination.</li><li><strong>Fill in both parties’ details.</strong> Enter registered addresses and authorized signatories. Watch the text preview update.</li><li><strong>Download and review.</strong> One agreement downloads as Word; multiple agreements come in a ZIP. Signatures remain blank for each party to sign.</li></ol><p>Session downloads stay available until you refresh or close the page. The NDA and MSA use your supplied templates. The DDA sets safeguards to verify before live lead processing.</p><button className="button primary" onClick={() => setHelp(false)}>Got it<Check size={16} /></button></dialog>
   </div>;
 }

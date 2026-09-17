@@ -1,6 +1,6 @@
 # vedryxTech Document Studio
 
-A single Next.js application for preparing branded mutual NDAs, master services agreements, and data-protection agreements (DDA). The React frontend and document-generation API run together in one Node.js service.
+A single Next.js application for preparing branded mutual NDAs, master services agreements, data-protection agreements (DDA), and statements of work (SOW). The React frontend and document-generation API run together in one Node.js service.
 
 ## Run locally
 
@@ -15,15 +15,28 @@ Open http://localhost:3000. No API keys, database, or separate backend are neede
 
 ## Workflow
 
-1. Select NDA, MSA, DDA, or any combination.
+1. Select NDA, MSA, DDA, SOW, or any combination.
 2. Enter the client's registered legal entity, address, signatory, and title.
 3. Set the effective date and vedryxTech's registered address and authorized signatory.
-4. Review the live text preview, then generate.
+4. For an SOW, choose pricing A/B and INR/USD/AED, enter agreed rates, then complete scope, deliverables, timeline and payment terms. Review the live text preview, then generate.
 5. One agreement downloads as `.docx`; multiple selections download together as a `.zip` containing the selected Word files.
 
 Downloads are available again from **Session downloads** until the page is refreshed or closed. Form values and generated files are not persisted on the server or in browser storage. The application returns binary downloads instead of public, shareable document URLs. Signatures remain blank.
 
 The header's **Dark mode / Light mode** button initially follows the system theme and saves only the theme preference in local storage. It also works for the current session when browser storage is unavailable. The white document preview is intentionally unaffected. Responsive layouts cover compact phones, landscape screens, tablets and wide desktops.
+
+## Statement of work (SOW)
+
+SOWs share the branded DDA business-brief layout, logo, header, footer and signature styling. `src/lib/sow.ts` builds both the live preview and the Word body. Blank or zero rates are omitted; only rates for the selected pricing option appear. Positive rates are required for at least one item. INR is the default; USD and AED are also available. Rates accept up to two decimal places. Currency selection changes the denomination, not the numeric rate (no FX conversion).
+
+- **Option A:** per-minute voice calling, team callbacks, WhatsApp messages, email messages and site visits.
+- **Option B:** platform fee per billing period and site visits. When site-visit charges are below the platform fee, both are payable. When visits reach or exceed it, only site-visit charges are payable. This implements the user's literal waiver threshold, not a minimum-bill model: 5,000 platform + 500/visit means 0 visits = 5,000; 5 visits = 7,500; 10 visits = 5,000; 11 visits = 5,500, before taxes.
+
+An on-screen quantity calculator illustrates option B; its example quantity is not written into the contract. Site-visit billing requires a definition of a qualifying visit. Editable payment terms default to monthly arrears, 15 calendar days and additional applicable taxes; review these defaults for each client. The SOW incorporates the parties' MSA and requires signed change orders. It does not rewrite the supplied MSA.
+
+The API accepts an optional `sow` object, required and validated only when `agreements` includes `sow`. It has `model`, `currency`, `project`, `scope`, `deliverables`, `timeline`, `paymentTerms`, `visitDefinition`, and `rates` (decimal strings under `minute`, `callback`, `whatsapp`, `email`, `visit`, `platform`). Empty rate strings are allowed. Other document requests retain their existing payload format.
+
+After updating the DDA shell branding, run `node scripts/prepare-sow.mjs` to refresh `templates/sow.docx`. The runtime fills that shell from the shared SOW content builder.
 
 ## Data-protection agreement (DDA)
 
@@ -116,7 +129,7 @@ docker build -t vedryxtech-document-studio .
 docker run --rm -p 3000:3000 vedryxtech-document-studio
 ```
 
-This version has no sign-in or access-control layer. Use a private/internal deployment or add access control before making an internal workspace public. There is no document storage, e-signature integration, or SOW generator.
+This version has no sign-in or access-control layer. Use a private/internal deployment or add access control before making an internal workspace public. There is no document storage or e-signature integration.
 
 ## Checks
 
@@ -129,7 +142,7 @@ npm run test:e2e
 npm run build
 ```
 
-Tests cover all three document types, metadata and branding, XML escaping, preview consistency, mixed document bundles, request validation, error handling, theme persistence/system preference/blocked storage, and desktop/mobile workflows across widths from 320 to 1920 pixels. Test data is fictional.
+Tests cover all four document types, metadata and branding, XML escaping, preview consistency, mixed document bundles, request validation, error handling, theme persistence/system preference/blocked storage, and desktop/mobile workflows across widths from 320 to 1920 pixels. Test data is fictional.
 
 The development environment did not have LibreOffice installed, so printed Word pagination was not visually verified. Generated packages were checked structurally and their body text was validated against the templates. Review the Word layout before use.
 
