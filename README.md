@@ -21,7 +21,7 @@ Open http://localhost:3000. No API keys, database, or separate backend are neede
 4. For an SOW, choose pricing A/B and INR/USD/AED, enter agreed rates, then complete scope, deliverables, timeline and payment terms. Review the live text preview, then generate.
 5. One agreement downloads as `.docx`; multiple selections download together as a `.zip` containing the selected Word files.
 
-Downloads are available again from **Session downloads** until the page is refreshed or closed. Form values and generated files are not persisted on the server or in browser storage. The application returns binary downloads instead of public, shareable document URLs. Signatures remain blank.
+Downloads are available again from **Session downloads** until the page is refreshed or closed. Form values and generated files are not persisted on the server or in browser storage. The application returns binary downloads instead of public, shareable document URLs. Signatures remain blank. Each party has a separate vertical signing block with its own name, title, signature line and blank signing-date line; each block stays together across page breaks.
 
 The header's **Dark mode / Light mode** button initially follows the system theme and saves only the theme preference in local storage. It also works for the current session when browser storage is unavailable. The white document preview is intentionally unaffected. Responsive layouts cover compact phones, landscape screens, tablets and wide desktops.
 
@@ -71,7 +71,7 @@ Prepared templates are included in `templates/`. Generation does not depend on f
 node scripts/prepare-templates.mjs /path/to/original-msa.docx /path/to/original-nda.docx
 ```
 
-This updates the original two templates, their preview JSON, and the PNG logo. It leaves the source files untouched. Run `node scripts/prepare-dda.mjs` afterwards to refresh the DDA with the current branding. Review updated documents after changing templates.
+This updates the original two templates, their preview JSON, and the PNG logo. It leaves the source files untouched. Run `node scripts/prepare-dda.mjs` afterwards to refresh the DDA with the current branding. Review updated documents after changing templates. To upgrade existing prepared NDA/MSA/DDA signature blocks without reimporting originals, run `node scripts/prepare-signatures.mjs`. Shared signing text and Word layout live in `src/lib/signatures.mjs`.
 
 ## Application structure
 
@@ -144,7 +144,7 @@ npm run build
 
 Tests cover all four document types, metadata and branding, XML escaping, preview consistency, mixed document bundles, request validation, error handling, theme persistence/system preference/blocked storage, and desktop/mobile workflows across widths from 320 to 1920 pixels. Test data is fictional.
 
-The development environment did not have LibreOffice installed, so printed Word pagination was not visually verified. Generated packages were checked structurally and their body text was validated against the templates. Review the Word layout before use.
+Representative NDA, MSA, DDA and SOW downloads were rendered with LibreOffice and inspected after the signature-layout correction. Tests verify separate signing paragraphs, no tab-based alignment, matching previews, and Word pagination controls that keep each party’s block together. Pagination can vary with user input and the Word renderer.
 
 ## Source reference
 

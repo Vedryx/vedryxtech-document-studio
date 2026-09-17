@@ -4,6 +4,7 @@
  */
 import fs from 'node:fs/promises';
 import PizZip from 'pizzip';
+import { signatureParagraphXml } from '../src/lib/signatures.mjs';
 const content = JSON.parse(await fs.readFile('src/data/dda.json', 'utf8'));
 const W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
@@ -11,6 +12,7 @@ const PKG = 'http://schemas.openxmlformats.org/package/2006/relationships';
 const prefix = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 const escape = text => text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
 const paragraphs = content.map((p, index) => {
+  if (p.signature) return signatureParagraphXml(p);
   const style = index === 0 ? 'Title' : p.heading ? 'Heading1' : 'Normal';
   const signatureLine = /^(Authorized signatory:|Title:)/.test(p.text);
   return `<w:p><w:pPr><w:pStyle w:val="${style}"/>${signatureLine ? '<w:keepNext/>' : ''}</w:pPr><w:r><w:t xml:space="preserve">${escape(p.text)}</w:t></w:r></w:p>`;

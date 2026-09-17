@@ -34,3 +34,5 @@ html[data-theme='dark'] .progress-track{background:#263650}html[data-theme='dark
 
 .field select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}.sow-editor .field-hint{font-size:11px}.sow-editor .field-error p{margin:4px 0}
 .sow-rates{row-gap:14px}.sow-rates .field{margin-top:0}@media(min-width:961px){.preview-column{position:sticky;top:24px}.preview-sticky{position:static}}
+/* Each party signs in its own vertical block, in previews and Word. */
+.paper-body .signature-party{margin-top:24px;color:#1f5fff}.paper-body .signature-name,.paper-body .signature-title{margin-bottom:7px}.paper-body .signature-sign{margin-top:24px;margin-bottom:10px}.paper-body .signature-date{margin-bottom:24px}

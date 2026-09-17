@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { signatureParagraphs } from './signatures.mjs';
 
 export const rateLabels = { minute: 'Voice calling', callback: 'Team callbacks', whatsapp: 'WhatsApp messages', email: 'Email messages', visit: 'Site visits', platform: 'Platform fee' } as const;
 export type RateKey = keyof typeof rateLabels;
@@ -27,7 +28,7 @@ export function activeRates(sow: SowInput): RateKey[] { return (sow.model === 'A
 export function money(amount: number, currency: SowInput['currency']) { return `${currency} ${new Intl.NumberFormat(currency === 'INR' ? 'en-IN' : 'en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 100)}`; }
 export function platformTotal(platform: number, visits: number) { return visits >= platform ? visits : platform + visits; }
 type Parties = { companyFullName: string; companyAddress: string; clientName: string; clientDesignation: string; providerAddress: string; providerSignatory: string; providerDesignation: string; effectiveDate: string; sow?: SowInput };
-export function sowParagraphs(input: Parties): { text: string; heading: boolean }[] {
+export function sowParagraphs(input: Parties): { text: string; heading: boolean; signature?: string }[] {
   const sow = input.sow ?? emptySow;
   const value = (text: string, label: string) => text || `[${label}]`;
   const p = (text: string, heading = false) => ({ text, heading });
@@ -39,6 +40,6 @@ export function sowParagraphs(input: Parties): { text: string; heading: boolean 
   if (sow.model === 'B' && rows.includes('platform') && rows.includes('visit')) {
     paragraphs.push(p(`Platform-fee waiver: calculated separately for each billing period. If total site-visit charges are below ${money(minorUnits(sow.rates.platform), sow.currency)}, the platform fee plus site-visit charges are payable. When site-visit charges equal or exceed that amount, the platform fee is waived and only site-visit charges are payable. This calculation is before applicable taxes and any separately agreed charges.`));
   }
-  paragraphs.push(p('Invoicing and payment', true), p(value(sow.paymentTerms, 'Billing frequency, payment due date and taxes')), p('Changes to this SOW', true), p('Changes to scope, rates or timeline require a written Change Order signed by both parties in accordance with the MSA.'), p('Signatures', true), p('For vedryxTech'), p(`Authorized signatory: ${value(input.providerSignatory, 'Provider signatory')}`), p(`Title: ${value(input.providerDesignation, 'Provider title')}`), p('Signature: ____________________    Date: ____________________'), p(`For ${value(input.companyFullName, 'Client legal entity')}`), p(`Authorized signatory: ${value(input.clientName, 'Client signatory')}`), p(`Title: ${value(input.clientDesignation, 'Client title')}`), p('Signature: ____________________    Date: ____________________'));
+  paragraphs.push(p('Invoicing and payment', true), p(value(sow.paymentTerms, 'Billing frequency, payment due date and taxes')), p('Changes to this SOW', true), p('Changes to scope, rates or timeline require a written Change Order signed by both parties in accordance with the MSA.'), p('Signatures', true), ...signatureParagraphs({ providerName: 'vedryxTech', providerSignatory: value(input.providerSignatory, 'Provider signatory'), providerDesignation: value(input.providerDesignation, 'Provider title'), companyFullName: value(input.companyFullName, 'Client legal entity'), clientName: value(input.clientName, 'Client signatory'), clientDesignation: value(input.clientDesignation, 'Client title') }));
   return paragraphs;
 }

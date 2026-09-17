@@ -221,24 +221,54 @@
       "heading": false
     },
     {
-      "text": " Company: {providerName}                      Client: {companyFullName}",
-      "heading": true
+      "text": "For {providerName}",
+      "heading": true,
+      "signature": "party"
     },
     {
-      "text": " Sign: _____________________________              Sign:                                                              ",
-      "heading": true
+      "text": "Authorized signatory: {providerSignatory}",
+      "heading": false,
+      "signature": "name"
     },
     {
-      "text": " Name: {providerSignatory}Name: {clientName}",
-      "heading": true
+      "text": "Title: {providerDesignation}",
+      "heading": false,
+      "signature": "title"
     },
     {
-      "text": " Title: {providerDesignation}                             Title:  {clientDesignation}",
-      "heading": true
+      "text": "Signature: ______________________________",
+      "heading": false,
+      "signature": "sign"
     },
     {
-      "text": " Date: {effectiveDate}Date:  {effectiveDate}",
-      "heading": true
+      "text": "Date signed: ____________________________",
+      "heading": false,
+      "signature": "date"
+    },
+    {
+      "text": "For {companyFullName}",
+      "heading": true,
+      "signature": "party"
+    },
+    {
+      "text": "Authorized signatory: {clientName}",
+      "heading": false,
+      "signature": "name"
+    },
+    {
+      "text": "Title: {clientDesignation}",
+      "heading": false,
+      "signature": "title"
+    },
+    {
+      "text": "Signature: ______________________________",
+      "heading": false,
+      "signature": "sign"
+    },
+    {
+      "text": "Date signed: ____________________________",
+      "heading": false,
+      "signature": "date"
     }
   ],
   "nda": [
@@ -307,24 +337,54 @@
       "heading": false
     },
     {
-      "text": " Company: {providerName}                      Client: {companyFullName}",
-      "heading": true
+      "text": "For {providerName}",
+      "heading": true,
+      "signature": "party"
     },
     {
-      "text": " Sign: _____________________________              Sign:                                                              ",
-      "heading": false
+      "text": "Authorized signatory: {providerSignatory}",
+      "heading": false,
+      "signature": "name"
     },
     {
-      "text": " Name: {providerSignatory}Name:  {clientName}",
-      "heading": true
+      "text": "Title: {providerDesignation}",
+      "heading": false,
+      "signature": "title"
     },
     {
-      "text": " Title: {providerDesignation}                             Title:    {clientDesignation}",
-      "heading": true
+      "text": "Signature: ______________________________",
+      "heading": false,
+      "signature": "sign"
     },
     {
-      "text": " Date: {effectiveDate}Date:    {effectiveDate}",
-      "heading": true
+      "text": "Date signed: ____________________________",
+      "heading": false,
+      "signature": "date"
+    },
+    {
+      "text": "For {companyFullName}",
+      "heading": true,
+      "signature": "party"
+    },
+    {
+      "text": "Authorized signatory: {clientName}",
+      "heading": false,
+      "signature": "name"
+    },
+    {
+      "text": "Title: {clientDesignation}",
+      "heading": false,
+      "signature": "title"
+    },
+    {
+      "text": "Signature: ______________________________",
+      "heading": false,
+      "signature": "sign"
+    },
+    {
+      "text": "Date signed: ____________________________",
+      "heading": false,
+      "signature": "date"
     }
   ]
 }

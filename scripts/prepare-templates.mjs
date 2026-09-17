@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import PizZip from 'pizzip';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import sharp from 'sharp';
+import { normalizeSignatures } from './signature-template.mjs';
 const WORD = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
 const parser = new DOMParser();
 const serializer = new XMLSerializer();
@@ -70,6 +71,7 @@ for (const [type, source] of [['msa', process.argv[2]], ['nda', process.argv[3]]
     }
   }
   // All source media belongs to the old letterhead/watermark. None is in body.
+  normalizeSignatures(zip);
   const body = zip.file('word/document.xml').asText();
   if (/<(?:w:drawing|w:pict)/.test(body)) throw new Error('Inspect body images before removing original media.');
   for (const name of Object.keys(zip.files)) if (name.startsWith('word/media/')) zip.remove(name);
@@ -92,6 +94,9 @@ for (const [type, source] of [['msa', process.argv[2]], ['nda', process.argv[3]]
     text: Array.from(p.getElementsByTagNameNS(WORD, 't')).map(n => n.textContent).join(''),
     heading: Array.from(p.getElementsByTagNameNS(WORD, 't')).map(n => n.textContent).join('').trim().length < 90 && p.getElementsByTagNameNS(WORD, 'b').length > 0,
   })).filter(p => p.text.trim());
+  const signingStart = previews[type].findIndex(p => p.text === 'For {providerName}');
+  const roles = ['party', 'name', 'title', 'sign', 'date'];
+  previews[type].slice(signingStart).forEach((p, index) => { p.signature = roles[index % 5]; p.heading = p.signature === 'party'; });
   await fs.writeFile(`templates/${type}.docx`, zip.generate({ type: 'nodebuffer', compression: 'DEFLATE' }));
   console.log(`${type.toUpperCase()}: rebranded; ${previews[type].length} paragraphs retained.`);
 }

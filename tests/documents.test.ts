@@ -134,3 +134,24 @@ test('API downloads an SOW alone and all four agreements together', async () => 
     else assert.equal(zip.file(/\.docx$/).length, 4);
   }
 });
+
+test('all agreements keep each party in a separate, vertically stacked signing block', async () => {
+  const input: AgreementInput = { ...sample, providerSignatory: 'Provider representative with a deliberately long name', clientName: 'Client representative with another deliberately long name', sow };
+  for (const type of ['nda', 'msa', 'dda', 'sow'] as const) {
+    const xml = new PizZip(await generateDocument(input, type)).file('word/document.xml')!.asText();
+    const dom = parser.parseFromString(xml, 'application/xml');
+    const nodes = Array.from(dom.getElementsByTagNameNS(word, 'p')).filter(p => p.textContent?.trim());
+    const blocks = nodes.slice(-10);
+    assert.deepEqual(blocks.map(p => p.textContent), [
+      'For vedryxTech', `Authorized signatory: ${input.providerSignatory}`, `Title: ${input.providerDesignation}`, 'Signature: ______________________________', 'Date signed: ____________________________',
+      `For ${input.companyFullName}`, `Authorized signatory: ${input.clientName}`, `Title: ${input.clientDesignation}`, 'Signature: ______________________________', 'Date signed: ____________________________',
+    ], type);
+    for (const [index, p] of blocks.entries()) {
+      assert.equal(p.parentNode?.nodeName, 'w:body', 'Signing paragraphs must not be in side-by-side table cells');
+      assert.equal(p.getElementsByTagNameNS(word, 'tab').length, 0, 'No tab-based signature alignment');
+      assert.equal(p.getElementsByTagNameNS(word, 'jc')[0].getAttribute('w:val'), 'left');
+      assert.equal(p.getElementsByTagNameNS(word, 'keepNext')[0].getAttribute('w:val'), index % 5 === 4 ? '0' : '1', 'Keep each party together, allow a break between parties');
+      assert.equal(p.getElementsByTagNameNS(word, 'keepLines').length, 1);
+    }
+  }
+});

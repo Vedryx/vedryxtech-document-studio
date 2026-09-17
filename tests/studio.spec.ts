@@ -174,3 +174,20 @@ test('SOW pricing, currency, omission, waiver and downloads work', async ({ page
   await page.locator('#sow').scrollIntoViewIfNeeded();
   await page.screenshot({ path: `qa/sow-${testInfo.project.name}.png`, fullPage: true });
 });
+
+test('all previews separate signatories and signing lines vertically', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#providerSignatory').fill('Provider Signatory With A Long Name');
+  await page.locator('#clientName').fill('Client Signatory With A Different Long Name');
+  for (const type of ['NDA', 'MSA', 'DDA', 'SOW']) {
+    await page.getByRole('tab', { name: type, exact: true }).click();
+    const names = page.locator('.paper-body .signature-name');
+    await expect(names).toHaveCount(2);
+    await expect(names.nth(0)).toHaveText('Authorized signatory: Provider Signatory With A Long Name');
+    await expect(names.nth(1)).toHaveText('Authorized signatory: Client Signatory With A Different Long Name');
+    const sign = page.locator('.paper-body .signature-sign');
+    await expect(sign).toHaveCount(2);
+    await expect(page.locator('.paper-body .signature-date')).toHaveCount(2);
+    expect(await names.evaluateAll(nodes => nodes[1].getBoundingClientRect().top > nodes[0].getBoundingClientRect().bottom)).toBe(true);
+  }
+});
