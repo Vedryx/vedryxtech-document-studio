@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { generatePdf, pdfParagraphs } from '../src/lib/generate-pdf';
+import { PROVIDER } from '../src/lib/agreement';
+// Public logo stands in for the private signature during tests; never commit the real signature.
+process.env.PROVIDER_SIGNATURE_BASE64 = readFileSync('public/brand/logo.png').toString('base64');
 import PizZip from 'pizzip';
 import { DOMParser } from '@xmldom/xmldom';
 import { agreementSchema, type AgreementInput } from '../src/lib/agreement';
@@ -45,25 +51,26 @@ for (const type of ['nda', 'msa', 'dda'] as const) {
     assert.equal(paragraphs(source.file('word/document.xml')!.asText()).length, paragraphs(document).length);
   });
 }
-test('two documents download as a ZIP containing both named Word files', async () => {
+test('two documents download as a ZIP containing both named PDF files', async () => {
   const output = await generateDownload(sample);
   assert.equal(output.contentType, 'application/zip');
-  const files = new PizZip(output.buffer).file(/\.docx$/);
+  const files = new PizZip(output.buffer).file(/\.pdf$/);
   assert.equal(files.length, 2);
-  for (const file of files) { assert.match(file.name, /^vedryxTech-(MSA|NDA)-Example-Partners-LLC-2026-09-14.docx$/); assert.ok(new PizZip(file.asNodeBuffer()).file('word/document.xml')); }
+  for (const file of files) { assert.match(file.name, /^vedryxTech-(MSA|NDA)-Example-Partners-LLC-2026-09-14.pdf$/); assert.equal(file.asNodeBuffer().subarray(0, 5).toString(), '%PDF-'); }
 });
 test('DDA and every mixed selection produce the requested named documents', async () => {
   for (const agreements of [['dda'], ['dda', 'nda'], ['msa', 'dda'], ['nda', 'msa', 'dda']] as AgreementInput['agreements'][]) {
     assert.equal(agreementSchema.safeParse({ ...sample, agreements }).success, true);
     const response = await POST(request(JSON.stringify({ ...sample, agreements })));
     assert.equal(response.status, 200);
-    const zip = new PizZip(Buffer.from(await response.arrayBuffer()));
+    const bytes = Buffer.from(await response.arrayBuffer());
     if (agreements.length === 1) {
       assert.match(response.headers.get('content-disposition')!, /vedryxTech-DDA-/);
-      assert.ok(zip.file('word/document.xml'));
+      assert.equal(bytes.subarray(0, 5).toString(), '%PDF-');
     } else {
-      assert.equal(zip.file(/\.docx$/).length, agreements.length);
-      for (const type of agreements) assert.equal(zip.file(new RegExp(`-${type.toUpperCase()}-.*\\.docx$`)).length, 1);
+      const zip = new PizZip(bytes);
+      assert.equal(zip.file(/\.pdf$/).length, agreements.length);
+      for (const type of agreements) assert.equal(zip.file(new RegExp(`-${type.toUpperCase()}-.*\\.pdf$`)).length, 1);
     }
   }
 });
@@ -83,13 +90,13 @@ test('API returns validation errors and guards content type and request size', a
   assert.equal((await POST(request('{}', 'text/plain'))).status, 415);
   assert.equal((await POST(request(JSON.stringify({ text: 'a'.repeat(17000) })))).status, 413);
 });
-test('API returns a private binary Word download for one agreement', async () => {
+test('API returns a private binary PDF download for one agreement', async () => {
   const response = await POST(request(JSON.stringify({ ...sample, agreements: ['nda'] })));
   assert.equal(response.status, 200);
   assert.match(response.headers.get('content-disposition')!, /attachment; filename="vedryxTech-NDA-/);
   assert.match(response.headers.get('cache-control')!, /no-store/);
-  assert.match(response.headers.get('content-type')!, /wordprocessingml/);
-  assert.ok(new PizZip(Buffer.from(await response.arrayBuffer())).file('word/document.xml'));
+  assert.match(response.headers.get('content-type')!, /application\/pdf/);
+  assert.equal(Buffer.from(await response.arrayBuffer()).subarray(0, 5).toString(), '%PDF-');
 });
 
 const sow: SowInput = { ...emptySow, project: 'Voice agent & CRM {pilot}', scope: 'Outbound voice workflows <approved>.\nCRM integration.', deliverables: 'Agent deployment; client UAT sign-off.', timeline: '4 weeks after receipt of CRM access.', visitDefinition: 'Completed visit verified in the CRM, excluding cancellations.', rates: { ...emptySow.rates, minute: '2.50', visit: '500', platform: '5000' } };
@@ -129,9 +136,9 @@ test('API downloads an SOW alone and all four agreements together', async () => 
   for (const agreements of [['sow'], ['nda', 'msa', 'dda', 'sow']]) {
     const response = await POST(request(JSON.stringify({ ...sample, agreements, sow })));
     assert.equal(response.status, 200);
-    const zip = new PizZip(Buffer.from(await response.arrayBuffer()));
-    if (agreements.length === 1) assert.ok(zip.file('word/document.xml'));
-    else assert.equal(zip.file(/\.docx$/).length, 4);
+    const bytes = Buffer.from(await response.arrayBuffer());
+    if (agreements.length === 1) assert.equal(bytes.subarray(0, 5).toString(), '%PDF-');
+    else assert.equal(new PizZip(bytes).file(/\.pdf$/).length, 4);
   }
 });
 
@@ -154,4 +161,51 @@ test('all agreements keep each party in a separate, vertically stacked signing b
       assert.equal(p.getElementsByTagNameNS(word, 'keepLines').length, 1);
     }
   }
+});
+
+
+test('PDFs contain fixed provider details, one provider signature, blank client signing and complete clauses', async () => {
+  for (const type of ['nda', 'msa', 'dda', 'sow'] as const) {
+    const input = { ...sample, sow };
+    const output = await generatePdf(input, type);
+    const task = getDocument({ data: new Uint8Array(output), useSystemFonts: false });
+    const pdf = await task.promise;
+    let text = '';
+    let providerPage = 0;
+    let clientPage = 0;
+    let imageCount = 0;
+    for (let n = 1; n <= pdf.numPages; n++) {
+      const page = await pdf.getPage(n);
+      const content = await page.getTextContent();
+      const items = content.items.filter(i => 'str' in i);
+      const pageText = items.filter(i => i.transform[5] > 60).map(i => i.str).join(' ');
+      text += pageText + ' ';
+      assert.ok(pageText.replace(/vedryxTech.*?\d+ \/ \d+/, '').trim().length > 30, 'No empty/footer-only pages');
+      for (const item of items) assert.ok(item.transform[5] >= 24 && item.transform[5] <= 735, 'Text stays within the page');
+      if (pageText.includes('Authorized signatory: Devendra Saini')) { providerPage = n; assert.ok(pageText.includes('Date signed:')); }
+      if (pageText.includes(`Authorized signatory: ${sample.clientName}`)) { clientPage = n; assert.ok(pageText.includes('Signature: ______________________________')); }
+      const ops = await page.getOperatorList();
+      imageCount += ops.fnArray.filter(op => op === OPS.paintImageXObject).length;
+    }
+    const normalized = text.replace(/\s+/g, ' ');
+    assert.ok(normalized.includes(PROVIDER.providerAddress));
+    assert.ok(normalized.includes('Title: CEO'));
+    assert.ok(!normalized.includes(sample.providerSignatory));
+    assert.ok(providerPage > 0 && clientPage >= providerPage);
+    assert.equal(imageCount, pdf.numPages + 1, 'One logo per page and exactly one provider signature');
+    for (const p of pdfParagraphs(input, type).slice(1)) {
+      if (p.signature === 'sign' || p.signature === 'date') continue;
+      assert.ok(normalized.replace(/\s+/g, '').includes(p.text.replace(/\s+/g, '')), 'Complete PDF clause: ' + p.text.slice(0, 60));
+    }
+    await task.destroy();
+  }
+});
+test('provider identity cannot be overridden and no unsigned PDF is returned without the signature', async () => {
+  const parsed = agreementSchema.parse({ ...sample, providerSignatory: 'Injected Name', providerAddress: 'Wrong address', providerDesignation: 'Other title' });
+  for (const key of ['providerSignatory', 'providerAddress', 'providerDesignation'] as const) assert.equal(parsed[key], PROVIDER[key]);
+  assert.equal(agreementSchema.safeParse({ ...sample, providerAddress: undefined, providerSignatory: undefined, providerDesignation: undefined }).success, true);
+  const saved = process.env.PROVIDER_SIGNATURE_BASE64;
+  delete process.env.PROVIDER_SIGNATURE_BASE64;
+  try { await assert.rejects(generatePdf(sample, 'nda'), /not configured/); }
+  finally { process.env.PROVIDER_SIGNATURE_BASE64 = saved; }
 });

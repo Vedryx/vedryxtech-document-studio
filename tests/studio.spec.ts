@@ -1,8 +1,7 @@
 import { test, expect } from '@playwright/test';
 const details = {
   companyFullName: 'Example Properties LLC', companyAddress: 'Example Tower, Dubai, United Arab Emirates',
-  clientName: 'Alex Example', clientDesignation: 'Director', providerAddress: 'Sample business address, United Arab Emirates',
-  providerSignatory: 'Dev Example', providerDesignation: 'Founder & CEO',
+  clientName: 'Alex Example', clientDesignation: 'Director',
 };
 test('create both agreements, preview entered data, and redownload from this session', async ({ page }) => {
   const errors: string[] = [];
@@ -37,13 +36,13 @@ test('single agreement, empty selection, network error, reset and help work', as
   await page.locator('#nda-choice').check();
   const download = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Generate agreement', exact: true }).click();
-  expect((await download).suggestedFilename()).toMatch(/NDA-.*\.docx$/);
+  expect((await download).suggestedFilename()).toMatch(/NDA-.*\.pdf$/);
   await page.route('/api/documents', route => route.fulfill({ status: 500, json: { error: 'Please try again.' } }));
   await page.getByRole('button', { name: 'Generate agreement', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Please try again.');
   await page.getByRole('button', { name: 'Clear client' }).click();
   await expect(page.locator('#companyFullName')).toHaveValue('');
-  await expect(page.locator('#providerSignatory')).toHaveValue('Dev Example');
+  await expect(page.locator('.provider-details')).toContainText('Devendra Saini');
   await page.getByRole('button', { name: 'Help', exact: true }).click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await page.getByRole('button', { name: 'Got it' }).click();
@@ -73,7 +72,7 @@ test('DDA preview, standalone download, and three-agreement ZIP', async ({ page 
   await page.locator('#msa-choice').uncheck();
   const single = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Generate agreement', exact: true }).click();
-  expect((await single).suggestedFilename()).toMatch(/DDA-.*\.docx$/);
+  expect((await single).suggestedFilename()).toMatch(/DDA-.*\.pdf$/);
 });
 
 test('theme follows system, toggles, persists, and keeps paper white', async ({ page }) => {
@@ -147,7 +146,7 @@ test('SOW pricing, currency, omission, waiver and downloads work', async ({ page
   await page.locator('#sow-paymentTerms').fill('Monthly invoices, payable within 30 days. Taxes additional.');
   const single = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download SOW only' }).click();
-  expect((await single).suggestedFilename()).toMatch(/SOW-.*\.docx$/);
+  expect((await single).suggestedFilename()).toMatch(/SOW-.*\.pdf$/);
   await page.getByRole('radio', { name: /Option B/ }).check();
   await page.locator('#sow-currency').selectOption('AED');
   await page.locator('#rate-platform').fill('5000');
@@ -177,13 +176,12 @@ test('SOW pricing, currency, omission, waiver and downloads work', async ({ page
 
 test('all previews separate signatories and signing lines vertically', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#providerSignatory').fill('Provider Signatory With A Long Name');
   await page.locator('#clientName').fill('Client Signatory With A Different Long Name');
   for (const type of ['NDA', 'MSA', 'DDA', 'SOW']) {
     await page.getByRole('tab', { name: type, exact: true }).click();
     const names = page.locator('.paper-body .signature-name');
     await expect(names).toHaveCount(2);
-    await expect(names.nth(0)).toHaveText('Authorized signatory: Provider Signatory With A Long Name');
+    await expect(names.nth(0)).toHaveText('Authorized signatory: Devendra Saini');
     await expect(names.nth(1)).toHaveText('Authorized signatory: Client Signatory With A Different Long Name');
     const sign = page.locator('.paper-body .signature-sign');
     await expect(sign).toHaveCount(2);

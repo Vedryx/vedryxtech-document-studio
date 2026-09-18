@@ -4,6 +4,7 @@ import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 import { type AgreementInput, type AgreementType, filename, templateValues } from './agreement';
 
+import { generatePdf } from './generate-pdf';
 import { signatureParagraphXml } from './signatures.mjs';
 import { sowParagraphs } from './sow';
 
@@ -35,9 +36,9 @@ export async function generateDocument(input: AgreementInput, type: AgreementTyp
 export async function generateDownload(input: AgreementInput) {
   if (input.agreements.length === 1) {
     const type = input.agreements[0];
-    return { buffer: await generateDocument(input, type), name: filename(input, type), contentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' };
+    return { buffer: await generatePdf(input, type), name: filename(input, type), contentType: 'application/pdf' };
   }
   const archive = new PizZip();
-  for (const type of input.agreements) archive.file(filename(input, type), await generateDocument(input, type));
+  for (const type of input.agreements) archive.file(filename(input, type), await generatePdf(input, type));
   return { buffer: archive.generate({ type: 'nodebuffer', compression: 'DEFLATE' }), name: filename(input, 'agreements'), contentType: 'application/zip' };
 }

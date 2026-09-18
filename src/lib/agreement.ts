@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { sowSchema } from './sow';
 export const BRAND = 'vedryxTech';
+export const PROVIDER = { providerAddress: 'k-603, Mahindra Royale, Ajmera, Pimpri, Pune -411018', providerSignatory: 'Devendra Saini', providerDesignation: 'CEO' };
 export const agreementTypes = ['nda', 'msa', 'dda', 'sow'] as const;
 export type AgreementType = typeof agreementTypes[number];
 export const agreementLabels: Record<AgreementType, string> = {
@@ -25,9 +26,9 @@ export const agreementSchema = z.object({
   companyAddress: text('Client registered address', 600),
   clientName: text('Client signatory name', 120),
   clientDesignation: text('Client signatory title', 120),
-  providerAddress: text('vedryxTech registered address', 600),
-  providerSignatory: text('vedryxTech signatory name', 120),
-  providerDesignation: text('vedryxTech signatory title', 120),
+  providerAddress: z.unknown().optional().transform(() => PROVIDER.providerAddress),
+  providerSignatory: z.unknown().optional().transform(() => PROVIDER.providerSignatory),
+  providerDesignation: z.unknown().optional().transform(() => PROVIDER.providerDesignation),
   effectiveDate: date,
   sow: z.unknown().optional(),
   agreements: z.array(z.enum(agreementTypes)).min(1, 'Select at least one agreement').max(agreementTypes.length).refine(v => new Set(v).size === v.length, 'Select each agreement only once'),
@@ -45,5 +46,5 @@ export function templateValues(input: AgreementInput) {
 }
 export function filename(input: AgreementInput, type: AgreementType | 'agreements') {
   const client = input.companyFullName.normalize('NFKD').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 70) || 'client';
-  return `vedryxTech-${type.toUpperCase()}-${client}-${input.effectiveDate}.${type === 'agreements' ? 'zip' : 'docx'}`;
+  return `vedryxTech-${type.toUpperCase()}-${client}-${input.effectiveDate}.${type === 'agreements' ? 'zip' : 'pdf'}`;
 }

@@ -11,23 +11,23 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000. No API keys, database, or separate backend are needed.
+Open http://localhost:3000. No database or separate backend is needed. Signed PDF generation requires the private signature environment variable below.
 
 ## Workflow
 
 1. Select NDA, MSA, DDA, SOW, or any combination.
 2. Enter the client's registered legal entity, address, signatory, and title.
-3. Set the effective date and vedryxTech's registered address and authorized signatory.
+3. Set the effective date. Provider details are fixed: Devendra Saini, CEO, vedryxTech; k-603, Mahindra Royale, Ajmera, Pimpri, Pune -411018.
 4. For an SOW, choose pricing A/B and INR/USD/AED, enter agreed rates, then complete scope, deliverables, timeline and payment terms. Review the live text preview, then generate.
-5. One agreement downloads as `.docx`; multiple selections download together as a `.zip` containing the selected Word files.
+5. One agreement downloads as `.pdf`; multiple selections download together as a `.zip` containing the selected PDFs.
 
-Downloads are available again from **Session downloads** until the page is refreshed or closed. Form values and generated files are not persisted on the server or in browser storage. The application returns binary downloads instead of public, shareable document URLs. Signatures remain blank. Each party has a separate vertical signing block with its own name, title, signature line and blank signing-date line; each block stays together across page breaks.
+Downloads are available again from **Session downloads** until the page is refreshed or closed. Form values and generated files are not persisted on the server or in browser storage. The application returns binary downloads instead of public, shareable document URLs. Each party has a separate vertical signing block. Devendra Saini’s supplied signature image is embedded on the server, with the PDF generation date in Asia/Kolkata. The client’s signature and signing date remain blank. This embeds a supplied image; it is not a certificate-based digital signature.
 
 The header's **Dark mode / Light mode** button initially follows the system theme and saves only the theme preference in local storage. It also works for the current session when browser storage is unavailable. The white document preview is intentionally unaffected. Responsive layouts cover compact phones, landscape screens, tablets and wide desktops.
 
 ## Statement of work (SOW)
 
-SOWs share the branded DDA business-brief layout, logo, header, footer and signature styling. `src/lib/sow.ts` builds both the live preview and the Word body. Blank or zero rates are omitted; only rates for the selected pricing option appear. Positive rates are required for at least one item. INR is the default; USD and AED are also available. Rates accept up to two decimal places. Currency selection changes the denomination, not the numeric rate (no FX conversion).
+SOW PDFs share the other agreements’ logo, typography, page furniture and stacked signing blocks. `src/lib/sow.ts` builds both the live preview and the exported content. Blank or zero rates are omitted; only rates for the selected pricing option appear. Positive rates are required for at least one item. INR is the default; USD and AED are also available. Rates accept up to two decimal places. Currency selection changes the denomination, not the numeric rate (no FX conversion).
 
 - **Option A:** per-minute voice calling, team callbacks, WhatsApp messages, email messages and site visits.
 - **Option B:** platform fee per billing period and site visits. When site-visit charges are below the platform fee, both are payable. When visits reach or exceed it, only site-visit charges are payable. This implements the user's literal waiver threshold, not a minimum-bill model: 5,000 platform + 500/visit means 0 visits = 5,000; 5 visits = 7,500; 10 visits = 5,000; 11 visits = 5,500, before taxes.
@@ -63,7 +63,7 @@ Technical reference: [Twilio Call resource](https://www.twilio.com/docs/voice/ap
 - The supplied MSA and NDA were adapted with their agreement wording and body formatting retained. Old headers, footers, watermark images, company identity, address, and signatory defaults were replaced.
 - Addresses and signatories are required inputs. No guessed registered address or signatory is inserted.
 - The original India/Pune legal provisions, MSA non-compete, IP and liability clauses, and NDA duration clauses remain in the templates. This branding migration does not revise their substance.
-- All previews contain the corresponding template body text with the same substitutions. They are not page-accurate Word renderers.
+- All previews contain the corresponding agreement body text. PDF exports use the same clauses, with embedded fonts, the logo on every page, page numbers and a server-applied provider signature. The preview describes the applied signature without serving its source image to the browser.
 
 Prepared templates are included in `templates/`. Generation does not depend on files in the author's Downloads folder. To repeat the migration from originals:
 
@@ -78,10 +78,10 @@ This updates the original two templates, their preview JSON, and the PNG logo. I
 ```text
 src/app/page.tsx                 Main page
 src/components/document-studio.tsx  Form, preview, session downloads
-src/app/api/documents/route.ts  Validated POST API; returns DOCX or ZIP
+src/app/api/documents/route.ts  Validated POST API; returns PDF or ZIP
 src/app/api/health/route.ts     Health endpoint
 src/lib/agreement.ts           Shared validation, types, filenames
-src/lib/generate.ts            Server-side Word templating and ZIP packaging
+src/lib/generate.ts            PDF download packaging and legacy Word helpers
 src/data/preview.json          Preview text extracted from prepared templates
 src/data/dda.json              DDA draft text shared with the Word template builder
 src/components/theme-toggle.tsx  Persistent light/dark theme selection
@@ -99,9 +99,6 @@ Content type: `application/json`. Required fields:
   "companyAddress": "Example client registered address",
   "clientName": "Alex Example",
   "clientDesignation": "Director",
-  "providerAddress": "Example vedryxTech registered address",
-  "providerSignatory": "Dev Example",
-  "providerDesignation": "Founder & CEO",
   "effectiveDate": "2026-09-14",
   "agreements": ["nda", "msa", "dda"]
 }
@@ -111,7 +108,7 @@ The API validates real dates, required fields, length limits and document types;
 
 ## Production
 
-Vercel is configured by `vercel.json`. The Next.js route streams document downloads so multi-file ZIPs are not constrained by Vercel's 4.5 MB buffered-response limit. Templates are included using `outputFileTracingIncludes`; no external storage credentials are required.
+Vercel is configured by `vercel.json`. The Next.js route streams PDF downloads so multi-file ZIPs are not constrained by Vercel's 4.5 MB buffered-response limit. Templates are included using `outputFileTracingIncludes`; the private signature must be configured as described below.
 
 ```sh
 vercel --prod
@@ -144,8 +141,22 @@ npm run build
 
 Tests cover all four document types, metadata and branding, XML escaping, preview consistency, mixed document bundles, request validation, error handling, theme persistence/system preference/blocked storage, and desktop/mobile workflows across widths from 320 to 1920 pixels. Test data is fictional.
 
-Representative NDA, MSA, DDA and SOW downloads were rendered with LibreOffice and inspected after the signature-layout correction. Tests verify separate signing paragraphs, no tab-based alignment, matching previews, and Word pagination controls that keep each party’s block together. Pagination can vary with user input and the Word renderer.
+Representative signed NDA, MSA, DDA and SOW PDFs were rendered with Poppler and visually inspected. Tests verify complete clause text, fixed provider identity, one provider signature image, and separate signing blocks kept together on each page.
 
 ## Source reference
 
 The original frontend was reviewed at https://github.com/devwithsmile/apptwareDocsGenerator (main). It called an external `/generate-doc` service; the backend and document templates were not included in that repository. This project implements generation locally in Next.js using the supplied Word files.
+
+## Private signature configuration
+
+Set `PROVIDER_SIGNATURE_BASE64` to the base64 contents of the provider’s PNG signature. For local development, store it in `.env.local` (ignored by Git and Vercel uploads). In Vercel, use a **sensitive Production environment variable**, then redeploy. Never use a `NEXT_PUBLIC_` variable, place the image in `public/`, or commit the image or signed QA samples.
+
+A helper uploads a local PNG to the linked project without passing the image through CLI arguments or printing it:
+
+```sh
+node scripts/configure-signature.mjs /private/path/signature.png
+```
+
+Generation fails if the signature is missing or invalid, rather than silently returning an unsigned agreement. The provider identity is fixed by server validation, including when the request omits or attempts to override the old provider fields. The existing public document-generation endpoint produces signed PDFs on demand; the source PNG is not exposed as a separate asset. Tests use the public logo as a stand-in signature, never the real signature.
+
+`src/lib/generate-pdf.ts` renders PDFs directly from canonical agreement text using PDFKit and bundled OFL Noto Sans fonts. LibreOffice and external conversion services are not required in production. Original Word templates remain internal reference artifacts; the application now exports PDFs exclusively. `pdfjs-dist` tests check text preservation, provider identity, image counts, empty pages and page boundaries.

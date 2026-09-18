@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   if (!result.success) return error('Check the highlighted agreement details.', 400, result.error.flatten().fieldErrors);
   try {
     const download = await generateDownload(result.data);
-    // Stream Word/ZIP files so bundles can exceed Vercel's buffered-response limit.
+    // Stream PDF/ZIP files so bundles can exceed Vercel's buffered-response limit.
     let offset = 0;
     const stream = new ReadableStream<Uint8Array>({
       pull(controller) {
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     } });
   } catch {
     // Never log submitted addresses, signatories, or document contents.
-    console.error('Agreement generation failed. Check the packaged templates.');
+    console.error('Agreement generation failed. Check the document assets and signature configuration.');
     return error('We couldn’t generate the documents. Please try again.', 500);
   }
 }
